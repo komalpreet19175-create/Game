@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tic Tac Toe</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.screen {
+    width: 95%;
+    max-width: 450px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-bottom: 25px;
+}
+
+button {
+    border: none;
+    border-radius: 12px;
+    padding: 13px 20px;
+    margin: 7px;
+    font-size: 17px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.menuBtn {
+    width: 85%;
+    background: white;
+    color: #333;
+}
+
+.menuBtn:hover {
+    transform: scale(1.03);
+}
+
+.levelBtn {
+    width: 80%;
+    background: white;
+    color: #333;
+}
+
+.backBtn {
+    background: #333;
+    color: white;
+}
+
+#gameScreen,
+#levelScreen {
+    display: none;
+}
+
+.scoreboard {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.score {
+    background: rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 10px;
+    flex: 1;
+}
+
+.score p {
+    margin: 5px;
+}
+
+.scoreNumber {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+#status {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 15px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-width: 330px;
+    margin: auto;
+}
+
+.cell {
+    height: 100px;
+    background: white;
+    border-radius: 15px;
+    font-size: 45px;
+    color: #333;
+    margin: 0;
+}
+
+.cell:hover {
+    background: #eeeeee;
+}
+
+.gameBtn {
+    background: white;
+    color: #333;
+}
+
+.dangerBtn {
+    background: #ffdddd;
+    color: #b00000;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HOME SCREEN -->
+<div id="homeScreen" class="screen">
+
+    <h1>🎮 Tic Tac Toe</h1>
+
+    <h2>Choose Game Mode</h2>
+
+    <button class="menuBtn" onclick="showLevels()">
+        🤖 Play with Computer
+    </button>
+
+    <br>
+
+    <button class="menuBtn" onclick="startTwoPlayers()">
+        👥 2 Players
+    </button>
+
+</div>
+
+
+<!-- LEVEL SCREEN -->
+<div id="levelScreen" class="screen">
+
+    <h1>🎯 Select Level</h1>
+
+    <button class="levelBtn"
+            onclick="startComputerGame('easy')">
+        🟢 Easy
+    </button>
+
+    <br>
+
+    <button class="levelBtn"
+            onclick="startComputerGame('medium')">
+        🟡 Medium
+    </button>
+
+    <br>
+
+    <button class="levelBtn"
+            onclick="startComputerGame('hard')">
+        🔴 Hard
+    </button>
+
+    <br>
+
+    <button class="backBtn" onclick="goHome()">
+        🏠 Home
+    </button>
+
+</div>
+
+
+<!-- GAME SCREEN -->
+<div id="gameScreen" class="screen">
+
+    <h1>🎮 Tic Tac Toe</h1>
+
+    <div id="levelText"></div>
+
+    <!-- SCOREBOARD -->
+    <div class="scoreboard">
+
+        <div class="score">
+            <p id="playerOneName">👤 You (X)</p>
+            <p class="scoreNumber" id="scoreX">0</p>
+        </div>
+
+        <div class="score">
+            <p id="playerTwoName">🤖 Computer (O)</p>
+            <p class="scoreNumber" id="scoreO">0</p>
+        </div>
+
+        <div class="score">
+            <p>🤝 Draw</p>
+            <p class="scoreNumber" id="scoreDraw">0</p>
+        </div>
+
+    </div>
+
+
+    <div id="status">Your Turn (X)</div>
+
+
+    <!-- GAME BOARD -->
+    <div class="board">
+
+        <button class="cell"
+                onclick="makeMove(0)"
+                id="cell0"></button>
+
+        <button class="cell"
+                onclick="makeMove(1)"
+                id="cell1"></button>
+
+        <button class="cell"
+                onclick="makeMove(2)"
+                id="cell2"></button>
+
+
+        <button class="cell"
+                onclick="makeMove(3)"
+                id="cell3"></button>
+
+        <button class="cell"
+                onclick="makeMove(4)"
+                id="cell4"></button>
+
+        <button class="cell"
+                onclick="makeMove(5)"
+                id="cell5"></button>
+
+
+        <button class="cell"
+                onclick="makeMove(6)"
+                id="cell6"></button>
+
+        <button class="cell"
+                onclick="makeMove(7)"
+                id="cell7"></button>
+
+        <button class="cell"
+                onclick="makeMove(8)"
+                id="cell8"></button>
+
+    </div>
+
+
+    <br>
+
+    <button class="gameBtn"
+            onclick="restartGame()">
+        🔄 Restart
+    </button>
+
+    <button class="gameBtn"
+            onclick="goHome()">
+        🏠 Home
+    </button>
+
+    <br>
+
+    <button class="dangerBtn"
+            onclick="resetScores()">
+        🗑️ Reset Scores
+    </button>
+
+</div>
+
+
+<script>
+
+// ===============================
+// GAME VARIABLES
+// ===============================
+
+let board = [
+    "", "", "",
+    "", "", "",
+    "", "", ""
+];
+
+let currentPlayer = "X";
+
+let gameMode = "";
+
+let difficulty = "";
+
+let gameOver = false;
+
+
+// ===============================
+// SCORE
+// ===============================
+
+// IMPORTANT:
+// Scores are NOT saved in localStorage.
+// Therefore, after closing the game,
+// scores will start from 0.
+
+let scoreX = 0;
+let scoreO = 0;
+let scoreDraw = 0;
+
+
+// ===============================
+// WINNING PATTERNS
+// ===============================
+
+const winningPatterns = [
+
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+
+    [0, 4, 8],
+    [2, 4, 6]
+
+];
+
+
+// ===============================
+// HOME
+// ===============================
+
+function goHome() {
+
+    document.getElementById("homeScreen").style.display =
+        "block";
+
+    document.getElementById("levelScreen").style.display =
+        "none";
+
+    document.getElementById("gameScreen").style.display =
+        "none";
+}
+
+
+// ===============================
+// SHOW LEVELS
+// ===============================
+
+function showLevels() {
+
+    document.getElementById("homeScreen").style.display =
+        "none";
+
+    document.getElementById("levelScreen").style.display =
+        "block";
+
+    document.getElementById("gameScreen").style.display =
+        "none";
+}
+
+
+// ===============================
+// COMPUTER GAME
+// ===============================
+
+function startComputerGame(level) {
+
+    gameMode = "computer";
+
+    difficulty = level;
+
+    document.getElementById("homeScreen").style.display =
+        "none";
+
+    document.getElementById("levelScreen").style.display =
+        "none";
+
+    document.getElementById("gameScreen").style.display =
+        "block";
+
+
+    document.getElementById("playerOneName").innerText =
+        "👤 You (X)";
+
+    document.getElementById("playerTwoName").innerText =
+        "🤖 Computer (O)";
+
+
+    document.getElementById("levelText").innerText =
+        "Level: " + level.toUpperCase();
+
+
+    updateScores();
+
+    restartGame();
+}
+
+
+// ===============================
+// TWO PLAYER GAME
+// ===============================
+
+function startTwoPlayers() {
+
+    gameMode = "2player";
+
+    difficulty = "";
+
+
+    document.getElementById("homeScreen").style.display =
+        "none";
+
+    document.getElementById("levelScreen").style.display =
+        "none";
+
+    document.getElementById("gameScreen").style.display =
+        "block";
+
+
+    document.getElementById("playerOneName").innerText =
+        "❌ Player X";
+
+    document.getElementById("playerTwoName").innerText =
+        "⭕ Player O";
+
+
+    document.getElementById("levelText").innerText =
+        "👥 Two Players";
+
+
+    updateScores();
+
+    restartGame();
+}
+
+
+// ===============================
+// RESTART GAME
+// ===============================
+
+function restartGame() {
+
+    board = [
+        "", "", "",
+        "", "", "",
+        "", "", ""
+    ];
+
+    currentPlayer = "X";
+
+    gameOver = false;
+
+
+    for (let i = 0; i < 9; i++) {
+
+        document.getElementById(
+            "cell" + i
+        ).innerText = "";
+
+    }
+
+
+    if (gameMode === "computer") {
+
+        document.getElementById("status").innerText =
+            "Your Turn (X)";
+
+    } else {
+
+        document.getElementById("status").innerText =
+            "Player X Turn";
+
+    }
+}
+
+
+// ===============================
+// PLAYER MOVE
+// ===============================
+
+function makeMove(index) {
+
+    if (gameOver) return;
+
+
+    if (board[index] !== "") return;
+
+
+    // Computer ki turn mein player move nahi karega
+
+    if (
+        gameMode === "computer" &&
+        currentPlayer === "O"
+    ) {
+
+        return;
+
+    }
+
+
+    board[index] = currentPlayer;
+
+
+    document.getElementById(
+        "cell" + index
+    ).innerText = currentPlayer;
+
+
+    // WIN CHECK
+
+    if (checkWinner(currentPlayer)) {
+
+        endGame(currentPlayer);
+
+        return;
+    }
+
+
+    // DRAW CHECK
+
+    if (board.every(cell => cell !== "")) {
+
+        endGame("draw");
+
+        return;
+    }
+
+
+    // COMPUTER MODE
+
+    if (gameMode === "computer") {
+
+        currentPlayer = "O";
+
+        document.getElementById("status").innerText =
+            "🤖 Computer is thinking...";
+
+
+        setTimeout(computerMove, 450);
+
+    }
+
+    // TWO PLAYER MODE
+
+    else {
+
+        currentPlayer =
+            currentPlayer === "X"
+            ? "O"
+            : "X";
+
+
+        document.getElementById("status").innerText =
+            "Player " + currentPlayer + " Turn";
+
+    }
+
+}
+
+
+// ===============================
+// COMPUTER MOVE
+// ===============================
+
+function computerMove() {
+
+    if (gameOver) return;
+
+
+    let move;
+
+
+    // EASY
+
+    if (difficulty === "easy") {
+
+        move = easyMove();
+
+    }
+
+
+    // MEDIUM
+
+    else if (difficulty === "medium") {
+
+        move = mediumMove();
+
+    }
+
+
+    // HARD
+
+    else {
+
+        move = hardMove();
+
+    }
+
+
+    if (move !== -1) {
+
+        board[move] = "O";
+
+        document.getElementById(
+            "cell" + move
+        ).innerText = "O";
+
+    }
+
+
+    // COMPUTER WIN
+
+    if (checkWinner("O")) {
+
+        endGame("O");
+
+        return;
+    }
+
+
+    // DRAW
+
+    if (board.every(cell => cell !== "")) {
+
+        endGame("draw");
+
+        return;
+    }
+
+
+    currentPlayer = "X";
+
+
+    document.getElementById("status").innerText =
+        "Your Turn (X)";
+}
+
+
+// ===============================
+// EASY LEVEL
+// ===============================
+
+function easyMove() {
+
+    let empty = [];
+
+
+    for (let i = 0; i < 9; i++) {
+
+        if (board[i] === "") {
+
+            empty.push(i);
+
+        }
+
+    }
+
+
+    if (empty.length === 0) {
+
+        return -1;
+
+    }
+
+
+    return empty[
+        Math.floor(
+            Math.random() * empty.length
+        )
+    ];
+}
+
+
+// ===============================
+// MEDIUM LEVEL
+// ===============================
+
+function mediumMove() {
+
+    // Computer can win
+
+    let winMove = findWinningMove("O");
+
+
+    if (winMove !== -1) {
+
+        return winMove;
+
+    }
+
+
+    // Block player
+
+    let blockMove = findWinningMove("X");
+
+
+    if (blockMove !== -1) {
+
+        return blockMove;
+
+    }
+
+
+    // Center
+
+    if (board[4] === "") {
+
+        return 4;
+
+    }
+
+
+    // Random move
+
+    return easyMove();
+}
+
+
+// ===============================
+// FIND WINNING MOVE
+// ===============================
+
+function findWinningMove(player) {
+
+    for (let i = 0; i < 9; i++) {
+
+        if (board[i] === "") {
+
+            board[i] = player;
+
+
+            let win =
+                checkWinner(player);
+
+
+            board[i] = "";
+
+
+            if (win) {
+
+                return i;
+
+            }
+
+        }
+
+    }
+
+
+    return -1;
+}
+
+
+// ===============================
+// HARD LEVEL
+// ===============================
+
+function hardMove() {
+
+    let bestScore = -Infinity;
+
+    let move = -1;
+
+
+    for (let i = 0; i < 9; i++) {
+
+        if (board[i] === "") {
+
+            board[i] = "O";
+
+
+            let score = minimax(
+                board,
+                0,
+                false
+            );
+
+
+            board[i] = "";
+
+
+            if (score > bestScore) {
+
+                bestScore = score;
+
+                move = i;
+
+            }
+
+        }
+
+    }
+
+
+    return move;
+}
+
+
+// ===============================
+// MINIMAX AI
+// ===============================
+
+function minimax(
+    gameBoard,
+    depth,
+    isMaximizing
+) {
+
+    // Computer wins
+
+    if (
+        checkWinnerOnBoard(
+            gameBoard,
+            "O"
+        )
+    ) {
+
+        return 10 - depth;
+
+    }
+
+
+    // Player wins
+
+    if (
+        checkWinnerOnBoard(
+            gameBoard,
+            "X"
+        )
+    ) {
+
+        return depth - 10;
+
+    }
+
+
+    // Draw
+
+    if (
+        gameBoard.every(
+            cell => cell !== ""
+        )
+    ) {
+
+        return 0;
+
+    }
+
+
+    // COMPUTER
+
+    if (isMaximizing) {
+
+        let bestScore = -Infinity;
+
+
+        for (let i = 0; i < 9; i++) {
+
+            if (gameBoard[i] === "") {
+
+                gameBoard[i] = "O";
+
+
+                let score = minimax(
+                    gameBoard,
+                    depth + 1,
+                    false
+                );
+
+
+                gameBoard[i] = "";
+
+
+                bestScore = Math.max(
+                    bestScore,
+                    score
+                );
+
+            }
+
+        }
+
+
+        return bestScore;
+
+    }
+
+
+    // PLAYER
+
+    else {
+
+        let bestScore = Infinity;
+
+
+        for (let i = 0; i < 9; i++) {
+
+            if (gameBoard[i] === "") {
+
+                gameBoard[i] = "X";
+
+
+                let score = minimax(
+                    gameBoard,
+                    depth + 1,
+                    true
+                );
+
+
+                gameBoard[i] = "";
+
+
+                bestScore = Math.min(
+                    bestScore,
+                    score
+                );
+
+            }
+
+        }
+
+
+        return bestScore;
+
+    }
+
+}
+
+
+// ===============================
+// CHECK WINNER
+// ===============================
+
+function checkWinner(player) {
+
+    return winningPatterns.some(
+        pattern => {
+
+            return pattern.every(
+                index =>
+                    board[index] === player
+            );
+
+        }
+    );
+}
+
+
+// ===============================
+// CHECK WINNER FOR AI
+// ===============================
+
+function checkWinnerOnBoard(
+    gameBoard,
+    player
+) {
+
+    return winningPatterns.some(
+        pattern => {
+
+            return pattern.every(
+                index =>
+                    gameBoard[index] === player
+            );
+
+        }
+    );
+}
+
+
+// ===============================
+// END GAME
+// ===============================
+
+function endGame(result) {
+
+    gameOver = true;
+
+
+    if (result === "X") {
+
+        scoreX++;
+
+
+        if (gameMode === "computer") {
+
+            document.getElementById(
+                "status"
+            ).innerText =
+                "🎉 You Win!";
+
+        }
+
+        else {
+
+            document.getElementById(
+                "status"
+            ).innerText =
+                "🎉 Player X Wins!";
+
+        }
+
+    }
+
+
+    else if (result === "O") {
+
+        scoreO++;
+
+
+        if (gameMode === "computer") {
+
+            document.getElementById(
+                "status"
+            ).innerText =
+                "🤖 Computer Wins!";
+
+        }
+
+        else {
+
+            document.getElementById(
+                "status"
+            ).innerText =
+                "🎉 Player O Wins!";
+
+        }
+
+    }
+
+
+    else {
+
+        scoreDraw++;
+
+
+        document.getElementById(
+            "status"
+        ).innerText =
+            "🤝 It's a Draw!";
+
+    }
+
+
+    updateScores();
+}
+
+
+// ===============================
+// UPDATE SCORE
+// ===============================
+
+function updateScores() {
+
+    document.getElementById(
+        "scoreX"
+    ).innerText = scoreX;
+
+
+    document.getElementById(
+        "scoreO"
+    ).innerText = scoreO;
+
+
+    document.getElementById(
+        "scoreDraw"
+    ).innerText = scoreDraw;
+}
+
+
+// ===============================
+// RESET SCORES
+// ===============================
+
+function resetScores() {
+
+    scoreX = 0;
+
+    scoreO = 0;
+
+    scoreDraw = 0;
+
+
+    updateScores();
+}
+
+</script>
+
+</body>
+</html>
